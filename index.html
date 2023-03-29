@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covid Tracker</title>
+    <link rel="stylesheet" href="">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+    crossorigin="anonymous"> -->
+ 
+
+<body class="loading">
+    <!-- top nav -->
+    <div class="nav-wrapper">
+        <div class="container">
+            <div class="nav">
+                <a href="" class="logo">
+                    C<i class="bx bxs-virus-block bx-tada"> </i>VID TRACKER
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- end top nav -->
+    <!-- main content -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-3 col-md-6 col-sm-12">
+                    <div class="box">
+                        <div class="country-select" id="country-select">
+                            <div class="country-select-toggle" id="country-select-toggle">
+                                <span> Global</span>
+                                <i class="bx bx-chevron-down"></i>
+                            </div>
+                            <div class="country-select-list" id="country-select-list">
+                                <input type="text" placeholder="Search Country Name">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end counrty select -->
+
+            <!-- tracking info -->
+            <div class="row">
+                <!-- left content -->
+                <div class="col-7 col-md-12 col-sm-12">
+                    <div class="row">
+                        <!-- counter -->
+                        <div class="col-4 col-md-4 col-sm-12">
+                            <div class="box box-hover">
+                                <div class="count count-confirmed">
+                                    <div class="count-icon">
+                                        <i class="bx bxs-virus"> </i>
+                                    </div>
+                                    <div class="count-info">
+                                        <h5 id="confirmed-total">123,456,789</h5>
+                                        <span>confirmed</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <!-- counter -->
+                        <div class="col-4 col-md-4 col-sm-12">
+                            <div class="box box-hover"> <div class="count count-recovered">
+                                <div class="count-icon">
+                                    <i class="bx bxs-smile"> </i>
+                                </div>
+                                <div class="count-info">
+                                    <h5 id="recovered-total">123,456,789</h5>
+                                    <span>Recovered</span>
+                                </div>
+                            </div></div>
+                           
+                        </div>
+
+
+                        
+                        <!-- counter -->
+                        <div class="col-4 col-md-4 col-sm-12">
+                            <div class="box box-hover"><div class="count count-death">
+                                <div class="count-icon">
+                                    <i class="bx bxs-sad"> </i>
+                                </div>
+                                <div class="count-info">
+                                    <h5 id="death-total">123,456,789</h5>
+                                    <span>Deaths</span>
+                                </div>
+                            </div></div>
+                            
+                        </div>
+                        <!-- counter -->
+                    
+                        <div class="col-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    all times
+                                </div>
+                                <div class="box-body">
+                                    <div id="all-time-chart"></div>1
+                                </div>
+                            </div>
+                        </div>
+                        <!--  end all time chart-->
+                        <!-- embed video -->
+                        <div class="col-6 col-md-6 dol-sm-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    What is corona-virus
+                                </div>
+                                <div class="box-body">
+                                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/UBy19XGCgpE"
+                                        title="YouTube video player" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end embed video -->
+                        <div class="col-6 col-md-6 dol-sm-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    How to protect your self
+                                </div>
+                                <div class="box-body">
+                                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/UBy19XGCgpE"
+                                        title="YouTube video player" frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- end embed video -->
+                    </div>
+                </div>
+                <!-- end of left content -->
+
+                <!-- rigth content  -->
+                <div class="col-4 col-md-12 col-sm-12">
+                    <!-- 30 days chart -->
+                    <div class="box">
+                        <div class="box-header">
+                            Last 30 days
+                        </div>
+                        <div class="box-body">
+                            <div id="days-chart"></div>
+                        </div>
+                    </div>
+                       <!--  end 30 days chart -->
+
+                       <!-- recovery rate -->
+                       <div class="box">
+                        <div class="box-header"> recovery rate</div>
+                        <div class="box-body"> <div id="recovery-rate-chart"></div></div>
+                       </div>
+                        <!-- end of recovery rate -->
+                        <!-- top country affected -->
+                        <div class="box">
+                            <div class="box-header"> Top Countries affected</div>
+                            <div class="box-body">
+                                <table class="table-countries" id="table-countries">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                country
+                                            </th>
+                                            <th> Confirmed</th>
+                                            <th> Recovered</th>
+                                            <th> Deaths</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody> 
+                                        <tr>
+                                            <td> Test </td>
+                                            <td> Test </td>
+                                            <td> Test </td>
+                                            <td> Test </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                          <!-- end of top country affected -->
+                    
+                </div>
+                <!-- end of rigth content  -->
+
+                <!-- end of tracking info -->
+            </div>
+        </div>
+        <!-- end main content -->
+
+
+    <!-- footer -->
+    <div class="footer">
+        source from <a href="#" target="_blank">api.covid19api.com</a>
+        Designed by some one
+    </div>
+     <!--end of footer -->
+
+     <!-- loader -->
+     <div class="loader">
+        <i class="bx bxs-virus bx-spin"> </i>
+     </div>
+          <!-- end of loader -->
+
+
+        <!-- apex chart -->
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <!-- Js -->
+        <script src="JS/app.js"> </script>
+        <script src="JS/covidApi.js"> </script>
+        <script src="JS/fetch.js"> </script>
+
+
+</body>
+
+</html>
