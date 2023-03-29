@@ -9,10 +9,6 @@ const caseStatus ={
     death:'death',
 }
 
-
-// numberWithCommas = (x) =>{
-//     return x.toString().replace(/\B(?=(\d{3}) + (?!\d))/g , "," )
-//  }
  showConfirmedTotal = (total) => {
      document.querySelector('#confirmed-total').textContent = (total)
  }
@@ -29,9 +25,8 @@ let all_time_chart , days_chart,recovery_rate_chart
 
 window.onload = async() =>{
     console.log('Ready...')
-    await initCountryFilter()
-    await initAllTimeChart()
-    await initDaysChart()
+
+  
     await loadData('Global')
     await loadCountrySelectList()
     document.querySelector('#country-select-toggle').onclick = () => {
@@ -43,10 +38,7 @@ loadData = async (country) => {
     startLoading()
   //only init chart on page loaded first time
     await loadSummary(country)
-    await loadAllTimeChart(country)
-    await loadDaysChart(country)
- 
-    endLoading()
+        endLoading()
 }
 
 startLoading =() =>{
@@ -59,14 +51,15 @@ endLoading =() =>{
 isGlobal =(country) =>{
     return country === 'Global'
 }
+let summary , summaryData
 loadSummary = async (country) => {
-    let summaryData= await covidApi.getSummary()
-    let summary = summaryData.Global
+    summaryData= await covidApi.getSummary()
+ summary = summaryData.Global
     if(!isGlobal(country)){
         summary =summaryData.Countries.map(e => e.Slug === country)[0]
     }
  showConfirmedTotal(summary.TotalConfirmed)
- showRecoveredTotal(summary.TotalRecovered)
+ showRecoveredTotal(summary.NewConfirmed)
  showDeathTotal(summary.TotalDeaths)
 // Load countries table
 let casesByCountries = summaryData.Countries.sort((a,b) => b.TotalConfirmed - a.TotalConfirmed)
@@ -74,10 +67,10 @@ let table_countries_body = document.querySelector('#table-countries tbody')
 table_countries_body.innerHTML=''
 
 for(let i = 0; i<10 ;i++){
-    let rows =` <tr>
+    let rows =`<tr>
     <td> ${casesByCountries[i].Country}</td>
     <td> ${casesByCountries[i].TotalConfirmed}</td>
-    <td> ${casesByCountries[i].TotalRecovered}</td>
+    <td> ${casesByCountries[i].NewConfirmed}</td>
     <td> ${casesByCountries[i].TotalDeaths}</td>
 </tr>`
 
@@ -85,29 +78,7 @@ table_countries_body.innerHTML +=rows;
 }
 
 }
-initAllTimeChart = async() =>{
-    let options ={
-        chart:{
-            type:'line'
-        },
-        colors:[colors.confirmed,colors.recovered,colors.death],
-        series:[],
-        xaxis:{
-            catagories:[],
-            lables:{
-                show:false
-            }
-        },
-        grid:{
-            show:false
-        },
-        stroke:{
-            curve:'smooth'
-        }
-    }
-    all_time_chart = new ApexCharts(document.querySelector('#all-time-chart'),options)
-    all_time_chart.render()
-}
+
     renderData = (country_data) =>{
         let res = []
         country_data.forEach(e => {
@@ -132,149 +103,6 @@ initAllTimeChart = async() =>{
         })
         return res
     }
-
-
-
-
-    loadAllTimeChart = async (country) =>{
-        let lables = []
-        let confirm_data , recovered_data ,deaths_data
-        if(isGlobal(country)){
-                        let world_data = await covidApi.getWorldDaysCases()
-                        world_data.sort((a,b) => new Date (a.Date) - new Date(b.Date))
-                        world_data.forEach(e => {
-                            let d = new Date(e.Date)
-                            lables.push(`${d.getFullYear()} -${d.getMonth()+1} - ${d.getDate()}`)
-                        })
-                        confirm_data = renderWorldData(world_data,caseStatus.confirmed)
-                        recovered_data = renderWorldData(world_data,caseStatus.recovered)
-                        deaths_data = renderWorldData(world_data , caseStatus.death)
-                    }  else{
-                        let confirmed = await covidApi.getCountryAllTimeCases(country , caseStatus.confirmed)
-                        let recovered = await covidApi.getCountryAllTimeCases(country , caseStatus.recovered)
-                        let deaths = await covidApi.getCountryAllTimeCases(country , caseStatus.death)
-            
-                        confirm_data = renderData(confirmed)
-                        recovered_data = renderData(recovered)
-                        deaths_data = renderData(deaths)
-            
-                        confirmed.forEach(e => {
-                            let d = new Date(e.Date)
-                            lables.push(`${d.getFullYear()} - ${d.getMonth()+1} -${d.getDate()}`)
-                        })
-            
-                    }
-                    let series = [{
-                        name:'Confirmed',
-                        data: confirm_data
-                    },{
-                        name: 'Recovered' ,
-                        data: recovered_data
-                    },{
-                        name: 'Death' ,
-                        data: deaths_data
-                    }]
-
-                    all_time_chart.updateOptions({
-                        series:series,
-                        xaxis:{
-                            catagories:lables
-                        }
-                    })
-    }
-
-       initDaysChart = async () => {
-        let options ={
-            chart:{
-                type:'line'
-            },
-            colors:[colors.confirmed,colors.recovered,colors.death],
-            series:[],
-            xaxis:{
-                catagories:[],
-                lables:{
-                    show:false
-                }
-            },
-            grid:{
-                show:false
-            },
-            stroke:{
-                curve:'smooth'
-            }
-        }
-       days_chart = new ApexCharts(document.querySelector('#days-chart'),options)
-       days_chart.render()
-       }
-
-
-loadDaysChart = async (country) =>{
-    let lables = []
-    let confirm_data , recovered_data ,deaths_data
-    if(isGlobal(country)){
-                    let world_data = await covidApi.getWorldAllTimeCases()
-                    world_data.sort((a,b) => new Date(a.Date) - new Date(b.Date))
-                    world_data.forEach(e => {
-                        let d = new Date(e.Date)
-                        lables.push(`${d.getFullYear()} -${d.getMonth()+1} - ${d.getDate()}`)
-                    })
-                    confirm_data = renderWorldData(world_data,caseStatus.confirmed)
-                    recovered_data = renderWorldData(world_data,caseStatus.recovered)
-                    deaths_data = renderWorldData(world_data , caseStatus.death)
-                }  else{
-                    let confirmed = await covidApi.getCountryDaysCases(country , caseStatus.confirmed)
-                    let recovered = await covidApi.getCountryDaysCases(country , caseStatus.recovered)
-                    let deaths = await covidApi.getCountryDaysCases(country , caseStatus.death)
-        
-                    confirm_data = renderData(confirmed)
-                    recovered_data = renderData(recovered)
-                    deaths_data = renderData(deaths)
-        
-                    confirmed.forEach(e => {
-                        let d = new Date(e.Date)
-                        lables.push(`${d.getFullYear()} - ${d.getMonth()+1} -${d.getDate()}`)
-                    })
-        
-                }
-                let series = [{
-                    name:'Confirmed',
-                    data: confirm_data
-                },{
-                    name: 'Recovered' ,
-                    data: recovered_data
-                },{
-                    name: 'Death' ,
-                    data: deaths_data
-                }]
-
-                days_chart.updateOptions({
-                    series:series,
-                    xaxis:{
-                        catagories:lables
-                    }
-                })
-
-}
-
-
-// // initRecoverRate = async () =>{
-// //     let options ={
-// //         chart:{
-// //             type:'radialBar',
-// //             heigth:'350'
-// //         },
-// //         series:[],
-// //         lables:['Recovery rate'],
-// //         colors:[colors.recovered]   
-// //     }
-// //    }
-
-// loadRecoveryRate = async (rate)=> {
-//     recovery_rate_chart.updateSeries([rate])
-// }
-
-
-
 renderCountrySelectList = (list) => {
     let country_select_list = document.querySelector('#country-select-list')
     country_select_list.querySelectorAll('div').forEach(e => e.remove())
@@ -287,7 +115,12 @@ renderCountrySelectList = (list) => {
       item.onclick = async () =>{
         document.querySelector('#country-select span').textContent = e.Country
         country_select_list.classList.toggle('active')
-        await loadData(e.Slug)
+        let selectconfirmed = e.NewConfirmed
+        let Totalconfirmed = e.TotalConfirmed
+        let TotalDeaths = e.TotalDeath
+        document.querySelector('#confirmed-total').textContent = selectconfirmed
+        document.querySelector('#recovered-total').textContent =Totalconfirmed
+        document.querySelector('#death-total').textContent = TotalDeaths
       }
 
       country_select_list.appendChild(item)
@@ -305,20 +138,179 @@ loadCountrySelectList = async () =>{
 
 
     item.onclick = async () => {
+        
         document.querySelector('#country-select span').textContent ='Global'
         country_select_list.classList.toggle('active')
-        await loadData('Global')
+        
     }
     country_select_list.appendChild(item)
 
     renderCountrySelectList(countries_list)
 }
 
+    fetch('https://api.covid19api.com/summary')
+    .then((response) => response.json())
+  .then((data) => {
 
-initCountryFilter = () =>{
-    let input = document.querySelector('#country-select-list input')
-    input.onkeyup = () =>{
-        let filtered = countries_list.filter(e => e.Country.toLowerCase().includes(input.value))
-        renderCountrySelectList(filtered)
-    }
-}
+ let Totalconfirmed =  data.Global.TotalConfirmed
+  let NewConfirmed =  data.Global.NewConfirmed
+  let TotalDeath =  data.Global.TotalDeaths
+
+  
+
+  Highcharts.chart('container', {
+    chart: {
+        type: 'bar'
+    },
+    title: {
+        text: 'COVID-19 Analysis',
+        align: 'left'
+    },
+    subtitle: {
+        text: 'Source: <a ' +
+            'href="https://en.wikipedia.org/wiki/List_of_continents_and_continental_subregions_by_population"' +
+            'target="_blank">Wikipedia.org</a>',
+        align: 'left'
+    },
+    xAxis: {
+        categories: ['Total Confrimed', 'Death', 'Recovered'],
+        title: {
+            text: null
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Covid (millions)',
+            align: 'high'
+        },
+        labels: {
+            overflow: 'justify'
+        }
+    },
+    tooltip: {
+        valueSuffix: ' millions'
+    },
+    plotOptions: {
+        bar: {
+            dataLabels: {
+                enabled: true
+            }
+        }
+    },
+    legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'top',
+        x: -40,
+        y: 80,
+        floating: true,
+        borderWidth: 1,
+        backgroundColor:
+            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+        shadow: true
+    },
+    credits: {
+        enabled: false
+    },
+    series: [{
+        name: 'Total Confirmed',
+       data: [Totalconfirmed]
+    }, {
+        name: 'New Death',
+        data: [NewConfirmed]
+    }, {
+        name: 'New Confirmed',
+        data: [TotalDeath]
+    }]
+});
+
+});
+
+
+fetch('https://api.covid19api.com/summary')
+.then((response) => response.json())
+.then((data) => {
+
+    
+ let Totalconfirmed1 =  data.Global.TotalConfirmed
+ let NewConfirmed1 =  data.Global.NewConfirmed
+ let TotalDeath1 =  data.Global.TotalDeaths
+ let NewDeath1 = data.Global.NewDeath
+
+ // Data retrieved from https://netmarketshare.com
+Highcharts.chart('container1', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Average',
+        align: 'left'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+            }
+        }
+    },
+    series: [{
+        name: 'Brands',
+        colorByPoint: true,
+        data: [{
+            name: 'Total Confirmed',
+            y: Totalconfirmed1,
+            sliced: true,
+            selected: true
+        }, {
+            name: 'New Confirmed',
+            y:NewConfirmed1
+        }, {
+            name: 'New Death',
+            y:NewDeath1
+        }, {
+            name: 'Total Death',
+            y:TotalDeath1
+        }]
+    }]
+});
+
+});
+
+
+    
+
+// initCountryFilter = () =>{
+//     let inputdata = documnet.querySelector('#country-select-list input')
+//     inputdata.onkeyup = () => {
+//         let filtered = countries_list.filter(e => e.Country.toLowerCase().includes(inputdata.value))
+
+// renderCountrySelectList(filtered)
+//     }
+// }
+
+
+
+
+
+      
+
+
+
+
+
+          
