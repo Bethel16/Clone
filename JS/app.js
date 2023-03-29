@@ -32,7 +32,6 @@ window.onload = async() =>{
     await initCountryFilter()
     await initAllTimeChart()
     await initDaysChart()
-    await initRecoverRate()
     await loadData('Global')
     await loadCountrySelectList()
     document.querySelector('#country-select-toggle').onclick = () => {
@@ -69,7 +68,6 @@ loadSummary = async (country) => {
  showConfirmedTotal(summary.TotalConfirmed)
  showRecoveredTotal(summary.TotalRecovered)
  showDeathTotal(summary.TotalDeaths)
-await loadRecoveryRate( Math.floor(summary.TotalRecovered / summary.TotalConfirmed *100))
 // Load countries table
 let casesByCountries = summaryData.Countries.sort((a,b) => b.TotalConfirmed - a.TotalConfirmed)
 let table_countries_body = document.querySelector('#table-countries tbody')
@@ -259,24 +257,21 @@ loadDaysChart = async (country) =>{
 }
 
 
-initRecoverRate = async () =>{
-    let options ={
-        chart:{
-            type:'radialBar',
-            heigth:'350'
-        },
-        series:[],
-        lables:['Recovery rate'],
-        colors:[colors.recovered]   
-    }
-   recovery_rate_chart = new ApexCharts(document.querySelector('#recovery-rate-chart'),options)
-   days_chart.render()
-   document.querySelector('#recovery-rate-chart').innerHTML=15;
-   }
+// // initRecoverRate = async () =>{
+// //     let options ={
+// //         chart:{
+// //             type:'radialBar',
+// //             heigth:'350'
+// //         },
+// //         series:[],
+// //         lables:['Recovery rate'],
+// //         colors:[colors.recovered]   
+// //     }
+// //    }
 
-loadRecoveryRate = async (rate)=> {
-    recovery_rate_chart.updateSeries([rate])
-}
+// loadRecoveryRate = async (rate)=> {
+//     recovery_rate_chart.updateSeries([rate])
+// }
 
 
 

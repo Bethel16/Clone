@@ -23,7 +23,7 @@ a {
 body {
     font-family: 'Poppins', cursive;
     position: relative;
-   
+   background-color: #172b4d;
     color: var(--color-txt);
     padding-top: calc((var(--nav-height)) + 30px);
     font-size: 13px;
@@ -63,6 +63,7 @@ body {
     color: var(--color-txt);
     font-size: 2rem;
     font-weight: 900;
+    
 }
 
 .logo i {
@@ -100,6 +101,8 @@ body {
 /* end top var */
 /* country drop */
 .country-select {
+    background-color: #bffabf;
+    height:40px;
     position: relative;
 }
 
@@ -217,7 +220,9 @@ th{
 }
 .table-countries{
     width: 100%;
+    background-color: #172b4d;
     border-spacing: 0;
+    color: white;
 }
 .table-countries thead tr th,
 .table-countries tbody tr td{
